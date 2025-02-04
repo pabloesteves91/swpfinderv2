@@ -5,6 +5,7 @@ body {
     padding: 0;
     background: #f0f4ff; /* Hellblau als Hintergrund */
     color: #333;
+    line-height: 1.6;
 }
 
 /* Container-Styling */
@@ -73,6 +74,7 @@ input, select, button {
     margin: 10px auto;
     display: block;
     background: white;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 input:focus, select:focus {
@@ -130,6 +132,12 @@ button:hover:enabled {
     margin-bottom: 10px;
     background: #f0f4ff; /* Hellblauer Hintergrund */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.result-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Profilbilder */
@@ -141,6 +149,11 @@ button:hover:enabled {
     border-radius: 10px;
     margin-bottom: 10px;
     border: 2px solid #007bff; /* Blauer Rand */
+    transition: border-color 0.3s ease;
+}
+
+.result-card img:hover {
+    border-color: #0056b3; /* Dunkleres Blau beim Hover */
 }
 
 /* Ergebnis-Titel */
