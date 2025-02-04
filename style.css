@@ -1,9 +1,9 @@
 /* Allgemeines Styling */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background: #f0f4ff; /* Hellblau als Hintergrund */
+    background: linear-gradient(135deg, #f0f4ff, #e0e9ff); /* Moderner Gradient */
     color: #333;
     line-height: 1.6;
 }
@@ -12,12 +12,12 @@ body {
 .container {
     text-align: center;
     width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 800px; /* Etwas breiter für modernes Layout */
+    margin: 20px auto;
+    padding: 30px;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* Fixierter Kopfbereich */
@@ -26,31 +26,32 @@ body {
     top: 0;
     z-index: 1000;
     background: white;
-    padding: 10px;
+    padding: 20px;
     border-bottom: 2px solid #007bff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 /* Logo-Styling */
 .logo-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .logo {
-    width: 150px;
-    height: auto; /* Automatische Höhe */
+    width: 180px; /* Etwas größer */
+    height: auto;
     object-fit: contain;
 }
 
 /* Titel */
 h1 {
-    font-size: 24px;
+    font-size: 28px;
     color: #ff0000;
     text-transform: uppercase;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .app-title {
@@ -65,12 +66,12 @@ h1 {
 
 /* Eingabefelder, Dropdown und Buttons */
 input, select, button {
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 8px;
     width: 90%;
-    max-width: 300px;
+    max-width: 400px;
     margin: 10px auto;
     display: block;
     background: white;
@@ -105,11 +106,11 @@ button:hover:enabled {
     color: white;
     cursor: pointer;
     border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 8px;
     width: 90%;
-    max-width: 300px;
+    max-width: 400px;
     margin: 10px auto;
     display: block;
     transition: background-color 0.3s ease;
@@ -126,28 +127,28 @@ button:hover:enabled {
 
 .result-card {
     text-align: center;
-    padding: 10px;
+    padding: 20px;
     border: 2px solid #ff0000; /* Roter Rand */
-    border-radius: 5px;
-    margin-bottom: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
     background: #f0f4ff; /* Hellblauer Hintergrund */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .result-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Profilbilder */
 .result-card img {
     width: auto;
     height: auto;
-    max-width: 250px; /* Größer gemacht */
-    max-height: 250px; /* Größer gemacht */
+    max-width: 250px;
+    max-height: 250px;
     border-radius: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     border: 2px solid #007bff; /* Blauer Rand */
     transition: border-color 0.3s ease;
 }
@@ -158,14 +159,14 @@ button:hover:enabled {
 
 /* Ergebnis-Titel */
 .result-card h2 {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
-    margin: 5px 0;
+    margin: 10px 0;
 }
 
 /* Ergebnis-Daten */
 .result-card p {
-    font-size: 14px;
+    font-size: 16px;
     margin: 5px 0;
     color: #333;
 }
@@ -177,6 +178,6 @@ button:hover:enabled {
 /* Fehlermeldungen */
 #results p {
     text-align: center;
-    font-size: 16px;
+    font-size: 18px;
     color: #999;
 }
