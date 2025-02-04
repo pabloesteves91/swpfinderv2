@@ -1,12 +1,13 @@
+// Globale Variablen
 let people = []; // Daten aus der Excel-Datei werden hier gespeichert
 
 // Passwortschutz
 function checkPassword() {
     const password = "swissport24";
-    let userPassword = sessionStorage.getItem("authenticated");
+    const isAuthenticated = sessionStorage.getItem("authenticated") === "true";
 
-    if (!userPassword || userPassword !== "true") {
-        userPassword = prompt("Bitte geben Sie das Passwort ein, um die Web-App zu verwenden:");
+    if (!isAuthenticated) {
+        const userPassword = prompt("Bitte geben Sie das Passwort ein, um die Web-App zu verwenden:");
         if (userPassword === password) {
             sessionStorage.setItem("authenticated", "true");
             alert("Willkommen in der SWP FINDER Web-App!");
@@ -24,46 +25,39 @@ function lockApp() {
     location.reload(); // Seite neu laden, um Passwortschutz zu aktivieren
 }
 
-// Initialisiere Passwortprüfung beim Laden
-checkPassword();
-
 // Excel-Daten laden
-function loadExcelData() {
+async function loadExcelData() {
     const excelFilePath = "./Mitarbeiter.xlsx";
 
-    fetch(excelFilePath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Die Excel-Datei konnte nicht geladen werden.");
-            }
-            return response.arrayBuffer();
-        })
-        .then(data => {
-            const workbook = XLSX.read(data, { type: "array" });
+    try {
+        const response = await fetch(excelFilePath);
+        if (!response.ok) throw new Error("Die Excel-Datei konnte nicht geladen werden.");
 
-            if (!workbook.SheetNames.includes("Sheet1")) {
-                alert("Die Excel-Datei muss ein Tabellenblatt mit dem Namen 'Sheet1' enthalten.");
-                return;
-            }
+        const data = await response.arrayBuffer();
+        const workbook = XLSX.read(data, { type: "array" });
 
-            const sheet = workbook.Sheets["Sheet1"];
-            const jsonData = XLSX.utils.sheet_to_json(sheet);
+        if (!workbook.SheetNames.includes("Sheet1")) {
+            alert("Die Excel-Datei muss ein Tabellenblatt mit dem Namen 'Sheet1' enthalten.");
+            return;
+        }
 
-            people = jsonData.map(row => ({
-                personalCode: row["Personalnummer"].toString(),
-                firstName: row["Vorname"],
-                lastName: row["Nachname"],
-                shortCode: row["Kürzel"] || null,
-                position: row["Position"],
-                photo: `Fotos/${row["Vorname"]}_${row["Nachname"]}.jpg`
-            }));
+        const sheet = workbook.Sheets["Sheet1"];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-            console.log("Excel-Daten erfolgreich geladen:", people);
-        })
-        .catch(error => {
-            console.error("Fehler beim Laden der Excel-Datei:", error);
-            alert("Die Excel-Daten konnten nicht geladen werden.");
-        });
+        people = jsonData.map(row => ({
+            personalCode: row["Personalnummer"].toString(),
+            firstName: row["Vorname"],
+            lastName: row["Nachname"],
+            shortCode: row["Kürzel"] || null,
+            position: row["Position"],
+            photo: `Fotos/${row["Vorname"]}_${row["Nachname"]}.jpg`
+        }));
+
+        console.log("Excel-Daten erfolgreich geladen:", people);
+    } catch (error) {
+        console.error("Fehler beim Laden der Excel-Datei:", error);
+        alert("Die Excel-Daten konnten nicht geladen werden.");
+    }
 }
 
 // Suchbutton aktivieren, wenn Eingabe erfolgt
@@ -133,5 +127,6 @@ document.getElementById("searchButton").addEventListener("click", () => {
 // Sperr-Button
 document.getElementById("lockButton").addEventListener("click", lockApp);
 
-// Excel-Daten beim Start laden
+// Initialisierung
+checkPassword();
 loadExcelData();
