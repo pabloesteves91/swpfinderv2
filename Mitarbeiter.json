@@ -1,0 +1,44 @@
+[
+    {
+        "Personalnummer": 123456,
+        "Vorname": "Max",
+        "Nachname": "Mustermann",
+        "Kürzel": "ABC",
+        "Position": "Supervisor"
+    },
+    {
+        "Personalnummer": 654321,
+        "Vorname": "Lisa",
+        "Nachname": "Musterfrau",
+        "Kürzel": NaN,
+        "Position": "Supervisor Arrival"
+    },
+    {
+        "Personalnummer": 789012,
+        "Vorname": "John",
+        "Nachname": "Doe",
+        "Kürzel": NaN,
+        "Position": "Betriebsarbeiter"
+    },
+    {
+        "Personalnummer": 345678,
+        "Vorname": "Sarah",
+        "Nachname": "Smith",
+        "Kürzel": "DEF",
+        "Position": "Supervisor"
+    },
+    {
+        "Personalnummer": 987654,
+        "Vorname": "Paul",
+        "Nachname": "Walker",
+        "Kürzel": NaN,
+        "Position": "Betriebsarbeiter"
+    },
+    {
+        "Personalnummer": 148085,
+        "Vorname": "Fabio",
+        "Nachname": "Berta",
+        "Kürzel": "BRO",
+        "Position": "Supervisor Arrival"
+    }
+]

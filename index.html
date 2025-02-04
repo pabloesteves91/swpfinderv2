@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWP FINDER</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+
+    <!-- Web App Icon für iPhone -->
+    <link rel="apple-touch-icon" href="Lupe.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Swissport-Logo -->
+        <div class="logo-container">
+            <img src="swissport-logo.png" alt="Swissport Logo" class="logo">
+        </div>
+
+        <!-- Titel -->
+        <h1>
+            <a href="#" id="resetButton" class="app-title">SWP FINDER</a>
+        </h1>
+
+        <!-- Such- und Filterbereich -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Personalnummer, Kürzel, Vorname oder Nachname eingeben...">
+            <select id="filter">
+                <option value="all">Alle</option>
+                <option value="supervisor">Supervisor</option>
+                <option value="arrival">Supervisor Arrival</option>
+                <option value="employee">Betriebsarbeiter</option>
+                <option value="assistant">Duty Manager Assistent</option>
+                <option value="manager">Duty Manager</option>
+            </select>
+            <button id="searchButton" disabled>Suchen</button>
+            <button id="lockButton" class="lock-button">Sperren</button>
+        </div>
+
+        <!-- Suchergebnisse -->
+        <div id="results"></div>
+    </div>
+
+    <!-- SheetJS-Bibliothek -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- Hauptscript -->
+    <script src="script.js"></script>
+</body>
+</html>

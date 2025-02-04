@@ -1,0 +1,169 @@
+/* Allgemeines Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f0f4ff; /* Hellblau als Hintergrund */
+    color: #333;
+}
+
+/* Container-Styling */
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Fixierter Kopfbereich */
+.search-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: white;
+    padding: 10px;
+    border-bottom: 2px solid #007bff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo-Styling */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.logo {
+    width: 150px;
+    height: auto; /* Automatische Höhe */
+    object-fit: contain;
+}
+
+/* Titel */
+h1 {
+    font-size: 24px;
+    color: #ff0000;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.app-title {
+    text-decoration: none;
+    color: #ff0000;
+    transition: color 0.3s ease;
+}
+
+.app-title:hover {
+    color: #007bff;
+}
+
+/* Eingabefelder, Dropdown und Buttons */
+input, select, button {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 300px;
+    margin: 10px auto;
+    display: block;
+    background: white;
+}
+
+input:focus, select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+button {
+    background: #007bff; /* Blau für den Button */
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+button:disabled {
+    background: #ccc; /* Grauer Button, wenn deaktiviert */
+    cursor: not-allowed;
+}
+
+button:hover:enabled {
+    background: #0056b3; /* Dunkleres Blau beim Hover */
+}
+
+/* Sperr-Button */
+.lock-button {
+    background: #ff0000; /* Rot für Sperr-Button */
+    color: white;
+    cursor: pointer;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 300px;
+    margin: 10px auto;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.lock-button:hover {
+    background: #cc0000; /* Dunkleres Rot beim Hover */
+}
+
+/* Ergebnisse */
+#results {
+    margin-top: 20px;
+}
+
+.result-card {
+    text-align: center;
+    padding: 10px;
+    border: 2px solid #ff0000; /* Roter Rand */
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background: #f0f4ff; /* Hellblauer Hintergrund */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Profilbilder */
+.result-card img {
+    width: auto;
+    height: auto;
+    max-width: 250px; /* Größer gemacht */
+    max-height: 250px; /* Größer gemacht */
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #007bff; /* Blauer Rand */
+}
+
+/* Ergebnis-Titel */
+.result-card h2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+/* Ergebnis-Daten */
+.result-card p {
+    font-size: 14px;
+    margin: 5px 0;
+    color: #333;
+}
+
+.result-card p span {
+    font-weight: bold;
+}
+
+/* Fehlermeldungen */
+#results p {
+    text-align: center;
+    font-size: 16px;
+    color: #999;
+}
