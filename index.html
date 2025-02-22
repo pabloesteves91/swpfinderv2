@@ -10,60 +10,74 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header Section -->
-        <header class="app-header">
-            <img src="swissport-logo.png" alt="Swissport Logo" class="brand-logo">
-            <h1 class="app-title">
-                <span class="gradient-text">SWP</span> Finder
-            </h1>
-        </header>
+    <div class="container">
+        <!-- Swissport-Logo -->
+        <div class="logo-container">
+            <img src="swissport-logo.png" alt="Swissport Logo" class="logo">
+        </div>
 
-        <!-- Search Section -->
-        <section class="search-section">
-            <div class="search-card">
-                <div class="input-group">
-                    <input type="text" 
-                           id="searchInput" 
-                           placeholder="🔍 Mitarbeiter suchen..."
-                           class="modern-input">
-                    <select id="filter" class="modern-select">
-                        <option value="all">Alle Positionen</option>
-                        <option value="supervisor">Supervisor</option>
-                        <option value="arrival">Supervisor Arrival</option>
-                        <option value="employee">Betriebsarbeiter</option>
-                        <option value="assistant">Duty Manager Assistent</option>
-                        <option value="manager">Duty Manager</option>
-                    </select>
-                </div>
-                <div class="action-buttons">
-                    <button id="searchButton" class="primary-btn" disabled>
-                        Suchen
-                    </button>
-                    <button id="lockButton" class="secondary-btn">
-                        🔒 Sperren
-                    </button>
-                </div>
-            </div>
-        </section>
+        <!-- Titel -->
+        <h1>
+            <a href="#" id="resetButton" class="app-title">SWP FINDER</a>
+        </h1>
 
-        <!-- Results Section -->
-        <section class="results-section">
-            <div id="results" class="results-grid"></div>
-        </section>
+        <!-- Such- und Filterbereich -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Personalnummer, Kürzel, Vorname oder Nachname eingeben...">
+            <select id="filter">
+                <option value="all">Alle</option>
+                <option value="supervisor">Supervisor</option>
+                <option value="arrival">Supervisor Arrival</option>
+                <option value="employee">Betriebsarbeiter</option>
+                <option value="assistant">Duty Manager Assistent</option>
+                <option value="manager">Duty Manager</option>
+            </select>
+            <button id="searchButton" disabled>Suchen</button>
+            <button id="lockButton" class="lock-button">Sperren</button>
+        </div>
 
-        <!-- Image Overlay -->
-        <div id="imageOverlay" class="image-overlay">
-            <div class="overlay-content">
-                <span class="close-btn">&times;</span>
-                <img class="overlay-image" src="" alt="Vergrößertes Profilbild">
-            </div>
+        <!-- Suchergebnisse -->
+        <div id="results"></div>
+
+        <!-- Mermaid-Diagramm -->
+        <div class="mermaid">
+            graph TD
+                A[App-Start] --> B{Authentifiziert?}
+                B -->|Ja| C[App initialisieren]
+                B -->|Nein| D[Passwortabfrage]
+                D -->|Richtig| C
+                D -->|Falsch| E[Redirect]
+                C --> F[Daten laden]
+                F --> G[UI Setup]
+                G --> H[Bereit zur Suche]
+                H --> I[Suchinteraktion]
+                I --> J[Ergebnisanzeige]
+                H --> K[Sperrfunktion]
+                K --> A
         </div>
     </div>
 
+    <!-- SheetJS-Bibliothek (lokal) -->
     <script src="xlsx.full.min.js"></script>
+    <!-- Hauptscript -->
     <script src="script.js"></script>
+
+    <!-- Mermaid Initialisierung -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            mermaid.initialize({ 
+                startOnLoad: true,
+                theme: 'neutral', // Optional: 'dark', 'forest', etc.
+                flowchart: { 
+                    curve: 'basis' // Stil der Verbindungslinien
+                }
+            });
+        });
+    </script>
 </body>
 </html>
