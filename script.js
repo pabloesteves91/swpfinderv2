@@ -1,164 +1,135 @@
-// Globale Variablen
-let people = []; // Daten aus der Excel-Datei werden hier gespeichert
+// script.js
+document.addEventListener('DOMContentLoaded', () => {
+    let people = [];
+    const AUTH_KEY = 'swissport_auth';
 
-/**********************
- * PASSWORTSCHUTZ *
- **********************/
-function checkPassword() {
-    const password = "swissport24";
-    const isAuthenticated = sessionStorage.getItem("authenticated") === "true";
-
-    if (!isAuthenticated) {
-        const userPassword = prompt("Bitte geben Sie das Passwort ein, um die Web-App zu verwenden:");
-        if (userPassword === password) {
-            sessionStorage.setItem("authenticated", "true");
-            alert("Willkommen in der SWP FINDER Web-App!");
+    /**********************
+     * PASSWORTSCHUTZ *
+     **********************/
+    function checkAuth() {
+        if (!sessionStorage.getItem(AUTH_KEY)) {
+            const password = prompt("Bitte Passwort eingeben (Standard: swissport24):");
+            if (password === "swissport24") {
+                sessionStorage.setItem(AUTH_KEY, 'authenticated');
+                initApp();
+            } else {
+                alert("Ungültiges Passwort!");
+                window.location.reload();
+            }
         } else {
-            alert("Falsches Passwort!");
-            location.reload();
+            initApp();
         }
     }
-}
 
-/**********************
- * APP-SPERRFUNKTION *
- **********************/
-function lockApp() {
-    sessionStorage.removeItem("authenticated");
-    alert("Die App wurde gesperrt. Zurück zur Anmeldung!");
-    location.reload();
-}
+    /**********************
+     * APP-INITIALISIERUNG *
+     **********************/
+    function initApp() {
+        // Event Listener initialisieren
+        document.getElementById('searchButton').addEventListener('click', executeSearch);
+        document.getElementById('lockButton').addEventListener('click', lockApp);
+        document.getElementById('resetButton').addEventListener('click', resetSearch);
+        
+        // Excel-Daten laden
+        loadExcelData().then(() => {
+            document.getElementById('searchInput').addEventListener('input', toggleSearchButton);
+        });
+    }
 
-/**********************
- * EXCEL-DATEN LADEN *
- **********************/
-async function loadExcelData() {
-    const excelFilePath = "./Mitarbeiter.xlsx";
+    /**********************
+     * KERNFUNKTIONEN *
+     **********************/
+    async function loadExcelData() {
+        try {
+            const response = await fetch('./Mitarbeiter.xlsx');
+            const data = await response.arrayBuffer();
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            
+            people = XLSX.utils.sheet_to_json(sheet).map(person => ({
+                personalCode: person.Personalnummer.toString(),
+                firstName: person.Vorname,
+                lastName: person.Nachname,
+                position: person.Position,
+                photo: `Fotos/${person.Vorname}_${person.Nachname}.jpg`
+            }));
+            
+            console.log('Daten erfolgreich geladen:', people);
+        } catch (error) {
+            console.error('Fehler:', error);
+            alert('Daten konnten nicht geladen werden!');
+        }
+    }
 
-    try {
-        const response = await fetch(excelFilePath);
-        if (!response.ok) throw new Error("Die Excel-Datei konnte nicht geladen werden.");
+    function executeSearch() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const filter = document.getElementById('filter').value;
+        const results = document.getElementById('results');
+        
+        results.innerHTML = '';
+        
+        const filtered = people.filter(p => 
+            (p.personalCode.includes(searchTerm) ||
+            p.firstName.toLowerCase().includes(searchTerm) ||
+            p.lastName.toLowerCase().includes(searchTerm)
+            && (filter === 'all' || p.position === filter)
+        );
 
-        const data = await response.arrayBuffer();
-        const workbook = XLSX.read(data, { type: "array" });
-
-        if (!workbook.SheetNames.includes("Sheet1")) {
-            alert("Die Excel-Datei muss ein Tabellenblatt mit dem Namen 'Sheet1' enthalten.");
+        if (filtered.length === 0) {
+            results.innerHTML = '<p class="no-results">Keine Treffer gefunden</p>';
             return;
         }
 
-        const sheet = workbook.Sheets["Sheet1"];
-        const jsonData = XLSX.utils.sheet_to_json(sheet);
-
-        people = jsonData.map(row => ({
-            personalCode: row["Personalnummer"].toString(),
-            firstName: row["Vorname"],
-            lastName: row["Nachname"],
-            shortCode: row["Kürzel"] || null,
-            position: row["Position"],
-            photo: `Fotos/${row["Vorname"]}_${row["Nachname"]}.jpg`
-        }));
-
-        console.log("Excel-Daten erfolgreich geladen:", people);
-    } catch (error) {
-        console.error("Fehler beim Laden der Excel-Datei:", error);
-        alert("Die Excel-Daten konnten nicht geladen werden.");
+        filtered.forEach(person => {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = `
+                <img src="${person.photo}" alt="${person.firstName}" 
+                     onerror="this.onerror=null;this.src='Fotos/default.jpg';"
+                     class="profile-image">
+                <h3>${person.firstName} ${person.lastName}</h3>
+                <p class="position">${person.position}</p>
+                <p class="personal-nr">${person.personalCode}</p>
+            `;
+            results.appendChild(card);
+        });
     }
-}
 
-/**********************
- * INTERAKTIVE ELEMENTE *
- **********************/
-// Suchbutton-Status
-document.getElementById("searchInput").addEventListener("input", () => {
-    const searchInput = document.getElementById("searchInput").value.trim();
-    document.getElementById("searchButton").disabled = searchInput === "";
-});
+    /**********************
+     * HILFSFUNKTIONEN *
+     **********************/
+    function toggleSearchButton() {
+        const input = document.getElementById('searchInput');
+        document.getElementById('searchButton').disabled = !input.value.trim();
+    }
 
-// Zurücksetzen der Suche
-document.getElementById("resetButton").addEventListener("click", () => {
-    document.getElementById("searchInput").value = "";
-    document.getElementById("filter").selectedIndex = 0;
-    document.getElementById("searchButton").disabled = true;
-    document.getElementById("results").innerHTML = "";
-});
+    function resetSearch() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('filter').selectedIndex = 0;
+        document.getElementById('results').innerHTML = '';
+        toggleSearchButton();
+    }
 
-// Hauptsuchfunktion
-document.getElementById("searchButton").addEventListener("click", () => {
-    const searchInput = document.getElementById("searchInput").value.toLowerCase();
-    const filter = document.getElementById("filter").value;
-    const results = document.getElementById("results");
-    results.innerHTML = "";
+    function lockApp() {
+        sessionStorage.removeItem(AUTH_KEY);
+        window.location.reload();
+    }
 
-    const filteredPeople = people.filter(person => {
-        const matchesSearch = (
-            person.personalCode.toLowerCase().includes(searchInput) ||
-            person.shortCode?.toLowerCase().includes(searchInput) ||
-            person.firstName.toLowerCase().includes(searchInput) ||
-            person.lastName.toLowerCase().includes(searchInput)
-        );
-
-        const matchesFilter = (
-            filter === "all" ||
-            (filter === "supervisor" && person.position === "Supervisor") ||
-            (filter === "arrival" && person.position === "Supervisor Arrival") ||
-            (filter === "employee" && person.position === "Betriebsarbeiter") ||
-            (filter === "assistant" && person.position === "Duty Manager Assistent") ||
-            (filter === "manager" && person.position === "Duty Manager")
-        );
-
-        return matchesSearch && matchesFilter;
+    /**********************
+     * BILDER-OVERLAY *
+     **********************/
+    document.getElementById('results').addEventListener('click', e => {
+        if (e.target.classList.contains('profile-image')) {
+            const overlay = document.getElementById('imageOverlay');
+            overlay.querySelector('img').src = e.target.src;
+            overlay.style.display = 'flex';
+        }
     });
 
-    if (filteredPeople.length === 0) {
-        results.innerHTML = "<p>Keine Ergebnisse gefunden.</p>";
-        return;
-    }
-
-    filteredPeople.forEach(person => {
-        const card = document.createElement("div");
-        card.className = "result-card";
-        card.innerHTML = `
-            <img src="${person.photo}" alt="${person.firstName}" 
-                 onerror="this.src='Fotos/default.JPG';"
-                 class="profile-image">
-            <h2>${person.firstName} ${person.lastName}</h2>
-            <p><span>Personalnummer:</span> ${person.personalCode}</p>
-            ${person.shortCode ? `<p><span>Kürzel:</span> ${person.shortCode}</p>` : ""}
-            <p><span>Position:</span> ${person.position}</p>
-        `;
-        results.appendChild(card);
+    document.querySelector('.close-btn').addEventListener('click', () => {
+        document.getElementById('imageOverlay').style.display = 'none';
     });
-});
 
-/**********************
- * BILDVERGRÖSSERUNG *
- **********************/
-// Overlay anzeigen
-document.getElementById("results").addEventListener("click", (e) => {
-    if (e.target.classList.contains("profile-image")) {
-        const overlay = document.getElementById("imageOverlay");
-        const overlayImg = overlay.querySelector(".overlay-image");
-        overlayImg.src = e.target.src;
-        overlay.style.display = "flex";
-    }
+    // Initialisierung
+    checkAuth();
 });
-
-// Overlay schließen
-document.querySelector(".close-btn").addEventListener("click", () => {
-    document.getElementById("imageOverlay").style.display = "none";
-});
-
-// Overlay bei Klick im Hintergrund schließen
-document.getElementById("imageOverlay").addEventListener("click", (e) => {
-    if (e.target === document.getElementById("imageOverlay")) {
-        document.getElementById("imageOverlay").style.display = "none";
-    }
-});
-
-/**********************
- * INITIALISIERUNG *
- **********************/
-document.getElementById("lockButton").addEventListener("click", lockApp);
-checkPassword();
-loadExcelData();
