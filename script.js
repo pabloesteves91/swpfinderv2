@@ -1,7 +1,9 @@
 // Globale Variablen
 let people = []; // Daten aus der Excel-Datei werden hier gespeichert
 
-// Passwortschutz
+/**********************
+ * PASSWORTSCHUTZ *
+ **********************/
 function checkPassword() {
     const password = "swissport24";
     const isAuthenticated = sessionStorage.getItem("authenticated") === "true";
@@ -18,14 +20,18 @@ function checkPassword() {
     }
 }
 
-// Seite sperren
+/**********************
+ * APP-SPERRFUNKTION *
+ **********************/
 function lockApp() {
-    sessionStorage.removeItem("authenticated"); // Authentifizierung entfernen
+    sessionStorage.removeItem("authenticated");
     alert("Die App wurde gesperrt. Zurück zur Anmeldung!");
-    location.reload(); // Seite neu laden, um Passwortschutz zu aktivieren
+    location.reload();
 }
 
-// Excel-Daten laden
+/**********************
+ * EXCEL-DATEN LADEN *
+ **********************/
 async function loadExcelData() {
     const excelFilePath = "./Mitarbeiter.xlsx";
 
@@ -60,51 +66,50 @@ async function loadExcelData() {
     }
 }
 
-// Suchbutton aktivieren, wenn Eingabe erfolgt
+/**********************
+ * INTERAKTIVE ELEMENTE *
+ **********************/
+// Suchbutton-Status
 document.getElementById("searchInput").addEventListener("input", () => {
     const searchInput = document.getElementById("searchInput").value.trim();
-    const searchButton = document.getElementById("searchButton");
-    searchButton.disabled = searchInput === ""; // Button nur aktivieren, wenn Eingabe vorhanden
+    document.getElementById("searchButton").disabled = searchInput === "";
 });
 
-// Zurücksetzen bei Klick auf "SWP FINDER"
+// Zurücksetzen der Suche
 document.getElementById("resetButton").addEventListener("click", () => {
-    const searchInput = document.getElementById("searchInput");
-    const filter = document.getElementById("filter");
-    const searchButton = document.getElementById("searchButton");
-    const results = document.getElementById("results");
-
-    searchInput.value = ""; // Suchfeld leeren
-    filter.selectedIndex = 0; // Filter zurücksetzen
-    searchButton.disabled = true; // Suchbutton deaktivieren
-    results.innerHTML = ""; // Ergebnisse löschen
+    document.getElementById("searchInput").value = "";
+    document.getElementById("filter").selectedIndex = 0;
+    document.getElementById("searchButton").disabled = true;
+    document.getElementById("results").innerHTML = "";
 });
 
-// Such-Button-Event
+// Hauptsuchfunktion
 document.getElementById("searchButton").addEventListener("click", () => {
     const searchInput = document.getElementById("searchInput").value.toLowerCase();
     const filter = document.getElementById("filter").value;
     const results = document.getElementById("results");
-    results.innerHTML = ""; // Alte Ergebnisse löschen
+    results.innerHTML = "";
 
-    // Filtere Personen basierend auf Eingaben
     const filteredPeople = people.filter(person => {
-        const matchesPersonalCode = person.personalCode.toLowerCase().includes(searchInput);
-        const matchesShortCode = person.shortCode?.toLowerCase().includes(searchInput);
-        const matchesFirstName = person.firstName.toLowerCase().includes(searchInput);
-        const matchesLastName = person.lastName.toLowerCase().includes(searchInput);
-        const matchesFilter =
+        const matchesSearch = (
+            person.personalCode.toLowerCase().includes(searchInput) ||
+            person.shortCode?.toLowerCase().includes(searchInput) ||
+            person.firstName.toLowerCase().includes(searchInput) ||
+            person.lastName.toLowerCase().includes(searchInput)
+        );
+
+        const matchesFilter = (
             filter === "all" ||
             (filter === "supervisor" && person.position === "Supervisor") ||
             (filter === "arrival" && person.position === "Supervisor Arrival") ||
             (filter === "employee" && person.position === "Betriebsarbeiter") ||
             (filter === "assistant" && person.position === "Duty Manager Assistent") ||
-            (filter === "manager" && person.position === "Duty Manager");
+            (filter === "manager" && person.position === "Duty Manager")
+        );
 
-        return (matchesPersonalCode || matchesShortCode || matchesFirstName || matchesLastName) && matchesFilter;
+        return matchesSearch && matchesFilter;
     });
 
-    // Zeige Ergebnisse an oder eine Meldung, falls keine gefunden werden
     if (filteredPeople.length === 0) {
         results.innerHTML = "<p>Keine Ergebnisse gefunden.</p>";
         return;
@@ -114,7 +119,9 @@ document.getElementById("searchButton").addEventListener("click", () => {
         const card = document.createElement("div");
         card.className = "result-card";
         card.innerHTML = `
-            <img src="${person.photo}" alt="${person.firstName}" onerror="this.src='Fotos/default.JPG';">
+            <img src="${person.photo}" alt="${person.firstName}" 
+                 onerror="this.src='Fotos/default.JPG';"
+                 class="profile-image">
             <h2>${person.firstName} ${person.lastName}</h2>
             <p><span>Personalnummer:</span> ${person.personalCode}</p>
             ${person.shortCode ? `<p><span>Kürzel:</span> ${person.shortCode}</p>` : ""}
@@ -124,9 +131,34 @@ document.getElementById("searchButton").addEventListener("click", () => {
     });
 });
 
-// Sperr-Button
-document.getElementById("lockButton").addEventListener("click", lockApp);
+/**********************
+ * BILDVERGRÖSSERUNG *
+ **********************/
+// Overlay anzeigen
+document.getElementById("results").addEventListener("click", (e) => {
+    if (e.target.classList.contains("profile-image")) {
+        const overlay = document.getElementById("imageOverlay");
+        const overlayImg = overlay.querySelector(".overlay-image");
+        overlayImg.src = e.target.src;
+        overlay.style.display = "flex";
+    }
+});
 
-// Initialisierung
+// Overlay schließen
+document.querySelector(".close-btn").addEventListener("click", () => {
+    document.getElementById("imageOverlay").style.display = "none";
+});
+
+// Overlay bei Klick im Hintergrund schließen
+document.getElementById("imageOverlay").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("imageOverlay")) {
+        document.getElementById("imageOverlay").style.display = "none";
+    }
+});
+
+/**********************
+ * INITIALISIERUNG *
+ **********************/
+document.getElementById("lockButton").addEventListener("click", lockApp);
 checkPassword();
 loadExcelData();
