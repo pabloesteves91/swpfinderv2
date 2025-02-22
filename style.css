@@ -1,130 +1,227 @@
 /* style.css */
-/* Allgemeines Styling */
-body {
-    font-family: 'Roboto', sans-serif;
+:root {
+    --primary: #005EB8;    /* Swissport Blau */
+    --secondary: #E2001A;  /* Swissport Rot */
+    --background: #F8FAFC;
+    --surface: #FFFFFF;
+    --text-primary: #1E293B;
+    --text-secondary: #64748B;
+}
+
+/* Modern Reset */
+*, *::before, *::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background: #f8f9fa; /* Hellgrauer Hintergrund */
-    color: #2c3e50;
-    line-height: 1.6;
-    overflow-x: hidden;
 }
 
-/* Swissport Corporate Colors */
-:root {
-    --swissport-red: #cc0000;
-    --swissport-blue: #005eb8;
-    --swissport-gray: #6c757d;
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Container */
-.container {
-    max-width: 1200px;
-    margin: 2rem auto;
+/* App Container */
+.app-container {
+    max-width: 1440px;
+    margin: 0 auto;
     padding: 2rem;
-    background: white;
+}
+
+/* Header Styles */
+.app-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+    background: var(--surface);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 94, 184, 0.08);
+}
+
+.brand-logo {
+    width: 220px;
+    margin-bottom: 1.5rem;
+}
+
+.app-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Search Section */
+.search-card {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.modern-input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border: 2px solid #E2E8F0;
     border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    border: 1px solid #e9ecef;
-}
-
-/* Professionelle Rahmenanpassungen */
-.search-bar {
-    border: 2px solid var(--swissport-blue);
-    border-radius: 8px;
-    padding: 1.5rem;
-    background: #f8f9fa;
-}
-
-input, select {
-    border: 2px solid #dee2e6 !important;
+    font-size: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-input:focus, select:focus {
-    border-color: var(--swissport-blue) !important;
-    box-shadow: 0 0 0 3px rgba(0,94,184,0.1);
+.modern-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(0, 94, 184, 0.1);
+    outline: none;
 }
 
-button {
-    border: 2px solid transparent !important;
-    font-weight: 500;
-    letter-spacing: 0.5px;
+.modern-select {
+    appearance: none;
+    background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") 
+                no-repeat right 1rem center/16px;
 }
 
-button:hover {
-    transform: translateY(-1px);
+/* Button Styles */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
 }
 
-/* Result Cards - Business Style */
+.primary-btn {
+    background: var(--primary);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.secondary-btn {
+    background: var(--surface);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 94, 184, 0.2);
+}
+
+.secondary-btn:hover {
+    background: rgba(0, 94, 184, 0.05);
+}
+
+/* Results Grid */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
 .result-card {
-    border: 2px solid var(--swissport-red);
-    border-radius: 10px;
-    background: white;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
 }
 
 .result-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(204,0,0,0.08);
-    border-color: #b30000;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
-/* Profilbilder mit Swissport-Style */
 .result-card img {
-    border: 3px solid var(--swissport-blue);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    border: 2px solid var(--primary);
 }
 
-/* Header mit Corporate Identity */
-h1.app-title {
-    color: var(--swissport-red);
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(204,0,0,0.1);
-    border-bottom: 3px solid var(--swissport-blue);
-    display: inline-block;
-    padding-bottom: 0.5rem;
-}
-
-/* Moderner Lock-Button */
-.lock-button {
-    background: var(--swissport-red);
-    border-radius: 6px;
-    padding: 0.8rem 1.5rem;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-}
-
-/* Image Overlay Professional */
+/* Image Overlay */
 .image-overlay {
-    background: rgba(0,0,0,0.95);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.96);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.overlay-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
 }
 
 .overlay-image {
-    border: 3px solid white;
-    box-shadow: 0 12px 36px rgba(0,0,0,0.3);
+    max-height: 80vh;
+    border-radius: 16px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
 }
 
 .close-btn {
-    color: var(--swissport-red);
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
 }
 
-/* Responsive Anpassungen */
+.close-btn:hover {
+    color: var(--secondary);
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-    .container {
-        margin: 1rem;
+    .app-container {
+        padding: 1rem;
+    }
+
+    .search-card {
         padding: 1.5rem;
-        border-radius: 8px;
     }
 
-    .result-card {
-        margin: 1rem 0;
-        padding: 1.2rem;
+    .action-buttons {
+        flex-direction: column;
     }
 
-    .logo {
-        width: 160px;
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-logo {
+        width: 180px;
     }
 }
