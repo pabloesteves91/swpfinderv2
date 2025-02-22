@@ -3,36 +3,40 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #f0f4ff, #e0e9ff); /* Moderner Gradient */
+    background: linear-gradient(135deg, #f0f4ff, #e0e9ff);
     color: #333;
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
-/* Container-Styling */
+/* Container */
 .container {
     text-align: center;
     width: 100%;
-    max-width: 800px; /* Etwas breiter für modernes Layout */
+    max-width: 800px;
     margin: 20px auto;
-    padding: 30px;
+    padding: 20px;
     background: white;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* Fixierter Kopfbereich */
+/* Suchleiste */
 .search-bar {
     position: sticky;
     top: 0;
     z-index: 1000;
     background: white;
-    padding: 20px;
+    padding: 15px;
     border-bottom: 2px solid #007bff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-/* Logo-Styling */
+/* Logo */
 .logo-container {
     display: flex;
     justify-content: center;
@@ -40,7 +44,7 @@ body {
 }
 
 .logo {
-    width: 180px; /* Etwas größer */
+    width: 180px;
     height: auto;
     object-fit: contain;
 }
@@ -50,134 +54,113 @@ h1 {
     font-size: 28px;
     color: #ff0000;
     text-transform: uppercase;
-    font-weight: bold;
     margin-bottom: 20px;
 }
 
-.app-title {
-    text-decoration: none;
-    color: #ff0000;
-    transition: color 0.3s ease;
-}
-
-.app-title:hover {
-    color: #007bff;
-}
-
-/* Eingabefelder, Dropdown und Buttons */
+/* Eingabefelder & Buttons */
 input, select, button {
     padding: 12px;
     font-size: 16px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    width: 90%;
+    width: 100%;
     max-width: 400px;
     margin: 10px auto;
     display: block;
-    background: white;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
-}
-
-input:focus, select:focus {
-    border-color: #007bff;
-    outline: none;
+    transition: all 0.3s ease;
 }
 
 button {
-    background: #007bff; /* Blau für den Button */
+    background: #007bff;
     color: white;
     cursor: pointer;
-    border: none;
-    transition: background-color 0.3s ease;
-}
-
-button:disabled {
-    background: #ccc; /* Grauer Button, wenn deaktiviert */
-    cursor: not-allowed;
-}
-
-button:hover:enabled {
-    background: #0056b3; /* Dunkleres Blau beim Hover */
 }
 
 /* Sperr-Button */
 .lock-button {
-    background: #ff0000; /* Rot für Sperr-Button */
-    color: white;
-    cursor: pointer;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    margin: 10px auto;
-    display: block;
-    transition: background-color 0.3s ease;
+    background: #ff0000;
 }
 
-.lock-button:hover {
-    background: #cc0000; /* Dunkleres Rot beim Hover */
-}
-
-/* Ergebnisse */
-#results {
-    margin-top: 20px;
-}
-
+/* Ergebnis-Karten */
 .result-card {
-    text-align: center;
     padding: 20px;
-    border: 2px solid #ff0000; /* Roter Rand */
+    border: 2px solid #ff0000;
     border-radius: 10px;
-    margin-bottom: 15px;
-    background: #f0f4ff; /* Hellblauer Hintergrund */
+    margin: 15px 0;
+    background: #f0f4ff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    transition: transform 0.3s ease;
 }
 
 .result-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
 }
 
-/* Profilbilder */
-.result-card img {
-    width: auto;
-    height: auto;
-    max-width: 250px;
-    max-height: 250px;
+/* Bild-Overlay */
+.image-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-image {
+    max-width: 90%;
+    max-height: 90%;
     border-radius: 10px;
-    margin-bottom: 15px;
-    border: 2px solid #007bff; /* Blauer Rand */
-    transition: border-color 0.3s ease;
 }
 
-.result-card img:hover {
-    border-color: #0056b3; /* Dunkleres Blau beim Hover */
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    transition: color 0.3s ease;
 }
 
-/* Ergebnis-Titel */
-.result-card h2 {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 10px 0;
+.close-btn:hover {
+    color: #ff0000;
 }
 
-/* Ergebnis-Daten */
-.result-card p {
-    font-size: 16px;
-    margin: 5px 0;
-    color: #333;
-}
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
 
-.result-card p span {
-    font-weight: bold;
-}
+    .logo {
+        width: 150px;
+    }
 
-/* Fehlermeldungen */
-#results p {
-    text-align: center;
-    font-size: 18px;
-    color: #999;
+    h1 {
+        font-size: 24px;
+    }
+
+    input, select, button {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .result-card {
+        padding: 15px;
+    }
+
+    .overlay-image {
+        max-width: 95%;
+    }
+
+    .close-btn {
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+    }
 }
