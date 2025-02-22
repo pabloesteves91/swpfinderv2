@@ -1,135 +1,163 @@
-// script.js
-document.addEventListener('DOMContentLoaded', () => {
-    let people = [];
-    const AUTH_KEY = 'swissport_auth';
+// Globale Variablen
+let people = [];
+let isInitialized = false;
 
-    /**********************
-     * PASSWORTSCHUTZ *
-     **********************/
-    function checkAuth() {
-        if (!sessionStorage.getItem(AUTH_KEY)) {
-            const password = prompt("Bitte Passwort eingeben (Standard: swissport24):");
-            if (password === "swissport24") {
-                sessionStorage.setItem(AUTH_KEY, 'authenticated');
-                initApp();
-            } else {
-                alert("Ungültiges Passwort!");
-                window.location.reload();
-            }
+/**********************
+ * PASSWORTSCHUTZ *
+ **********************/
+function initializeApp() {
+    if (isInitialized) return;
+    
+    // Passwortabfrage
+    const password = "swissport24";
+    const isAuthenticated = sessionStorage.getItem("authenticated") === "true";
+
+    if (!isAuthenticated) {
+        const userPassword = prompt("Bitte geben Sie das Passwort ein:");
+        if (userPassword === password) {
+            sessionStorage.setItem("authenticated", "true");
+            setupApp();
         } else {
-            initApp();
+            alert("Zugang verweigert!");
+            window.location.href = "about:blank"; // Sicherer Redirect
         }
+    } else {
+        setupApp();
     }
+}
 
-    /**********************
-     * APP-INITIALISIERUNG *
-     **********************/
-    function initApp() {
-        // Event Listener initialisieren
-        document.getElementById('searchButton').addEventListener('click', executeSearch);
-        document.getElementById('lockButton').addEventListener('click', lockApp);
-        document.getElementById('resetButton').addEventListener('click', resetSearch);
+/**********************
+ * APP-SETUP *
+ **********************/
+function setupApp() {
+    // Event Listener registrieren
+    document.getElementById("searchInput").addEventListener("input", handleSearchInput);
+    document.getElementById("searchButton").addEventListener("click", performSearch);
+    document.getElementById("resetButton").addEventListener("click", resetSearch);
+    document.getElementById("lockButton").addEventListener("click", lockApp);
+
+    // Excel-Daten laden
+    loadExcelData().then(() => {
+        console.log("App ist bereit");
+        isInitialized = true;
+    }).catch(error => {
+        console.error("Initialisierungsfehler:", error);
+        alert("Kritischer Fehler beim Start!");
+    });
+}
+
+/**********************
+ * SPERRFUNKTION *
+ **********************/
+function lockApp() {
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.href = window.location.href; // Vollständiger Reset
+}
+
+/**********************
+ * DATENHANDLING *
+ **********************/
+async function loadExcelData() {
+    try {
+        const response = await fetch("./Mitarbeiter.xlsx");
+        if (!response.ok) throw new Error("Serverantwort: " + response.status);
         
-        // Excel-Daten laden
-        loadExcelData().then(() => {
-            document.getElementById('searchInput').addEventListener('input', toggleSearchButton);
-        });
-    }
-
-    /**********************
-     * KERNFUNKTIONEN *
-     **********************/
-    async function loadExcelData() {
-        try {
-            const response = await fetch('./Mitarbeiter.xlsx');
-            const data = await response.arrayBuffer();
-            const workbook = XLSX.read(data, { type: 'array' });
-            const sheet = workbook.Sheets[workbook.SheetNames[0]];
-            
-            people = XLSX.utils.sheet_to_json(sheet).map(person => ({
-                personalCode: person.Personalnummer.toString(),
-                firstName: person.Vorname,
-                lastName: person.Nachname,
-                position: person.Position,
-                photo: `Fotos/${person.Vorname}_${person.Nachname}.jpg`
-            }));
-            
-            console.log('Daten erfolgreich geladen:', people);
-        } catch (error) {
-            console.error('Fehler:', error);
-            alert('Daten konnten nicht geladen werden!');
-        }
-    }
-
-    function executeSearch() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const filter = document.getElementById('filter').value;
-        const results = document.getElementById('results');
+        const buffer = await response.arrayBuffer();
+        const workbook = XLSX.read(buffer, { type: "array" });
         
-        results.innerHTML = '';
+        if (!workbook.SheetNames.includes("Sheet1")) {
+            throw new Error("Fehlendes Arbeitsblatt");
+        }
+
+        const worksheet = workbook.Sheets["Sheet1"];
+        people = XLSX.utils.sheet_to_json(worksheet).map(entry => ({
+            personalCode: entry.Personalnummer.toString().padStart(6, '0'),
+            firstName: entry.Vorname,
+            lastName: entry.Nachname,
+            shortCode: entry.Kürzel || "N/A",
+            position: entry.Position,
+            photo: `Fotos/${entry.Vorname}_${entry.Nachname}.jpg`.replace(/\s+/g, '_')
+        }));
+
+        console.log("Daten erfolgreich geladen:", people.length + " Einträge");
         
-        const filtered = people.filter(p => 
-            (p.personalCode.includes(searchTerm) ||
-            p.firstName.toLowerCase().includes(searchTerm) ||
-            p.lastName.toLowerCase().includes(searchTerm)
-            && (filter === 'all' || p.position === filter)
-        );
-
-        if (filtered.length === 0) {
-            results.innerHTML = '<p class="no-results">Keine Treffer gefunden</p>';
-            return;
-        }
-
-        filtered.forEach(person => {
-            const card = document.createElement('div');
-            card.className = 'result-card';
-            card.innerHTML = `
-                <img src="${person.photo}" alt="${person.firstName}" 
-                     onerror="this.onerror=null;this.src='Fotos/default.jpg';"
-                     class="profile-image">
-                <h3>${person.firstName} ${person.lastName}</h3>
-                <p class="position">${person.position}</p>
-                <p class="personal-nr">${person.personalCode}</p>
-            `;
-            results.appendChild(card);
-        });
+    } catch (error) {
+        console.error("Datenladefehler:", error);
+        throw error;
     }
+}
 
-    /**********************
-     * HILFSFUNKTIONEN *
-     **********************/
-    function toggleSearchButton() {
-        const input = document.getElementById('searchInput');
-        document.getElementById('searchButton').disabled = !input.value.trim();
-    }
+/**********************
+ * SUCHLOGIK *
+ **********************/
+function handleSearchInput() {
+    const input = this.value.trim();
+    document.getElementById("searchButton").disabled = 
+        input.length < 2 && !/\d{4,}/.test(input);
+}
 
-    function resetSearch() {
-        document.getElementById('searchInput').value = '';
-        document.getElementById('filter').selectedIndex = 0;
-        document.getElementById('results').innerHTML = '';
-        toggleSearchButton();
-    }
+function performSearch() {
+    const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+    const filterValue = document.getElementById("filter").value;
+    
+    const results = people.filter(person => {
+        const matchesTerm = [
+            person.personalCode,
+            person.shortCode.toLowerCase(),
+            person.firstName.toLowerCase(),
+            person.lastName.toLowerCase()
+        ].some(field => field.includes(searchTerm));
 
-    function lockApp() {
-        sessionStorage.removeItem(AUTH_KEY);
-        window.location.reload();
-    }
+        const matchesFilter = {
+            all: true,
+            supervisor: person.position === "Supervisor",
+            arrival: person.position === "Supervisor Arrival",
+            employee: person.position === "Betriebsarbeiter",
+            assistant: person.position === "Duty Manager Assistent",
+            manager: person.position === "Duty Manager"
+        }[filterValue];
 
-    /**********************
-     * BILDER-OVERLAY *
-     **********************/
-    document.getElementById('results').addEventListener('click', e => {
-        if (e.target.classList.contains('profile-image')) {
-            const overlay = document.getElementById('imageOverlay');
-            overlay.querySelector('img').src = e.target.src;
-            overlay.style.display = 'flex';
-        }
+        return matchesTerm && matchesFilter;
     });
 
-    document.querySelector('.close-btn').addEventListener('click', () => {
-        document.getElementById('imageOverlay').style.display = 'none';
-    });
+    displayResults(results);
+}
 
-    // Initialisierung
-    checkAuth();
+function displayResults(results) {
+    const container = document.getElementById("results");
+    container.innerHTML = results.length > 0 
+        ? results.map(createResultCard).join("")
+        : `<p class="no-results">Keine Übereinstimmungen gefunden</p>`;
+}
+
+function createResultCard(person) {
+    return `
+        <div class="result-card">
+            <img src="${person.photo}" 
+                 alt="${person.firstName} ${person.lastName}"
+                 onerror="this.src='Fotos/default.jpg'">
+            <h2>${person.firstName} ${person.lastName}</h2>
+            <p class="personal-code">${person.personalCode}</p>
+            ${person.shortCode !== "N/A" 
+                ? `<p class="short-code">Kürzel: ${person.shortCode}</p>` 
+                : ""}
+            <p class="position">Position: ${person.position}</p>
+        </div>
+    `;
+}
+
+function resetSearch() {
+    document.getElementById("searchInput").value = "";
+    document.getElementById("filter").selectedIndex = 0;
+    document.getElementById("searchButton").disabled = true;
+    document.getElementById("results").innerHTML = "";
+}
+
+/**********************
+ * INITIALISIERUNG *
+ **********************/
+document.addEventListener("DOMContentLoaded", () => {
+    initializeApp();
+    document.getElementById("lockButton").addEventListener("click", lockApp);
 });
